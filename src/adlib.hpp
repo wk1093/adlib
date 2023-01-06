@@ -9,7 +9,7 @@ struct Dec { // similar to how scientific notation works, but with no decimal po
     // 120 = 12e1
     int64_t num; // number
     int32_t pwr;  // power
-    Dec(uint64_t num, int32_t pwr) : num(num), pwr(pwr) {}
+    Dec(uint64_t num, int32_t pwr) : num(num), pwr(pwr) {fix();}
     Dec() : num(0), pwr(0) {}
     Dec(double num) {
         this->pwr = 0;
@@ -19,14 +19,27 @@ struct Dec { // similar to how scientific notation works, but with no decimal po
         }
         this->num = num;
 
+        fix();
+    }
+
+    double toDouble() {
+        fix();
+        return this->num * pow(10, this->pwr);
+    }
+
+    void print() {
+        fix();
+        printf("%lde%d\n", num, pwr);
+    }
+    void fix() {
         while (this->num % 10 == 0 && this->num != 0) {
             this->num /= 10;
             this->pwr++;
         }
     }
 
-    void print() {
-        printf("%lde%d\n", num, pwr);
+    operator double() {
+        return toDouble();
     }
 
     Dec operator+(Dec other) {
